@@ -1,0 +1,25 @@
+<script type="text/ng-template" id="assets/views/modals/permission.html">
+    <md-dialog class="md-modal md-modal-wide rename-photo-modal">
+        <div class="md-modal-header">
+            <h1>Assign Folder Permission</h1>
+            <div ng-click="folders.closeModal()" class="md-close-modal"><i class="mdi mdi-close"></i></div>
+        </div>
+        <form ng-submit="folders.assignUsers(folders.id)">
+            <label ng-repeat="user in folders.users">
+              <input
+                type="checkbox"
+                name="users[]"
+                
+                ng-value="{{user.id}}"
+                ng-model="folders.folderNameModel[user.id]"
+                ng-true-value="{{user.id}}"
+              > {{user.first_name}} {{user.last_name}} (<label ng-repeat="location in user.locations"> {{location.name}}{{$last ? '' : ','}} </label>)
+            </label>
+
+            <div class="buttons">
+                <md-button type="button" ng-click="folders.closeModal()">{{:: 'cancel' | translate }}</md-button>
+                <md-button type="submit"  class="md-raised md-primary">Submit</md-button>
+            </div>
+        </form>
+    </md-dialog>
+</script>

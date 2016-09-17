@@ -1,0 +1,195 @@
+<section id="file-preview" ng-if="previewStatus.open" file-preview-container>
+    <div class="file-preview-inner">
+        <div class="top-bar">
+            <div class="logo"><img class="logo" src="assets/images/logo_light.png" alt="logo"/></div>
+            <div class="name"><i class="icon icon-{{fileTypes.getMimeIcon(preview.current.mime)}}"></i> {{utils.truncate(preview.current.name, 55)}}</div>
+            <div class="actions">
+                <md-button copy-link-to-clipboard>{{:: 'copyLink' | translate }}</md-button>
+                <md-button class="md-primary md-raised" ng-click="selectedItems.download(preview.current)">{{:: 'download' | translate }}</md-button>
+                <md-button class="icon-button close-button"><md-icon md-font-icon="icon icon-cancel"></md-icon></md-button>
+            </div>
+        </div>
+        <div class="content">
+            <div class="preview"></div>
+            <div class="no-preview-available">
+                <div class="message">{{:: noFilePreview | translate }}</div>
+                <div class="buttons"><md-button class="md-raised md-primary" ng-click="selectedItems.download()"><i class="icon icon-download"></i> {{:: 'download' | translate }}</md-button></div>
+            </div>
+        </div>
+        <div class="total-items" ng-show="preview.total > 1">{{preview.currentIndex+1}} {{:: 'of' | translate }} {{preview.total}} {{:: 'items' | translate }}</div>
+        <div class="next-item"><i class="icon icon-right-open-mini"></i></div>
+        <div class="prev-item"><i class="icon icon-left-open-mini"></i></div>
+        <div class="preview-loader">
+            <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+        </div>
+    </div>
+</section>
+
+<upgrade-modal ng-if="utils.getSetting('enablePayments')"></upgrade-modal>
+
+<!--
+<nav class="navbar navbar-default" ng-controller="NavbarController">
+    <div class="container-fluid">
+        <form class="navbar-form navbar-right navbar-search" ng-submit="goToSearchPage()">
+            <div class="input-group">
+                <md-autocomplete placeholder="{{:: 'searchFilesFolders' | translate }}" md-menu-class="search-suggestions" md-selected-item="selectedItem" md-selected-item-change="selectItem()"  md-delay="300" md-search-text="searchText" md-items="item in getSearchResults(searchText)" md-item-text="item.name">
+                    <md-item-template>
+                        <i ng-if="item.type == 'file'" class="icon icon-{{fileTypes.getMimeIcon(item.mime)}}"></i>
+                        <i ng-if="item.type == 'folder'" class="icon icon-folder"></i>
+                        <span md-highlight-text="searchText" md-highlight-flags="ig">{{ item.name }}</span>
+                    </md-item-template>
+                    <md-not-found>{{:: 'noMatches' | translate }}</md-not-found>
+                </md-autocomplete>
+                <div ng-click="goToSearchPage()" class="input-group-addon"><i class="icon icon-search"></i></div>
+            </div>
+        </form>
+    </div>
+</nav>-->
+<section class="flex-fluid-container">
+    <div class="middle-col-flex flex-fluid" ng-controller="AdminItemsController" allow-dir="true">
+
+        <div class="sub-nav">
+            <ul class="list-unstyled list-inline folder-path">
+                <li ng-click="folder_open(folder)" ng-class="{ selected: folders.selected.name === folder }" ng-repeat="folder in folders.selected.path.split('/')">
+                    <i class="icon icon-folder"></i> {{folder}}
+                </li>
+            </ul>
+            <!--<div class="action-buttons">
+                <md-button ng-if=":: isSmallScreen" class="left-col-toggler">{{:: 'Folders' | translate }} <i class="icon icon-folder"></i></md-button>
+                <md-button id="more-options" ed-more-options-menu ng-disabled="!selectedItems.getLength()">{{:: 'actions' | translate }} <i class="icon icon-ellipsis-vert"></i></md-button>
+                <div class="dropdown">
+                    <md-button data-toggle="dropdown">{{:: 'sort' | translate }} <i class="icon icon-sort-name-up"></i></md-button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li ng-click="changeOrder('name')" ng-class="{ selected: order.prop == 'name' }"><a href="" translate>name</a></li>
+                        <li ng-click="changeOrder('-file_size')" ng-class="{ selected: order.prop == '-file_size' }"><a href="" translate>sizeBigFirst</a></li>
+                        <li ng-click="changeOrder('file_size')" ng-class="{ selected: order.prop == 'file_size' }"><a href="" translate>sizeSmallFirst</a></li>
+                        <li ng-click="changeOrder('-created_at')" ng-class="{ selected: order.prop == '-created_at' }"><a href="" translate>dateUploaded</a></li>
+                    </ul>
+                </div>
+                <md-button ng-click="toggleSelectedView()">{{:: 'view' | translate }} <i ng-class="selectedView === 'grid' ? 'icon-th' : 'icon-th-large'" class="icon"></i></md-button>
+                <md-button ed-toggle-info-panel ng-class="{ active: rightPanel.open }">{{:: 'activity' | translate }} <i class="icon icon-info-circled"></i></md-button>
+            </div>-->
+        </div>
+
+        <div class="ad-container" ng-if="ad2" ng-bind-html="ad2"></div>
+
+        <div ui-view class="files-view" afkl-image-container items-selectable>
+            <div ng-class="{'album-empty': dashboardState.loaded && (! items || ! items.length)}">
+                <section ng-if="selectedView === 'grid' && items.length" class="user-items grid-view">
+                    <div ng-repeat="item in items track by item.share_id" ed-context-menu-item ng-click="selectItem(item, $event)" ng-dblclick="preview()" long-press="contextMenu.open()" ng-class="{ selected: itemIsSelected(item) }" class="user-item" ed-file-draggable ed-folder-droppable data-id="{{ item.id }}" data-type="{{item.type}}">
+                        <div class="user-item-inner">
+                            <div ng-if="fileTypes.isImage(item.mime)" class="img-wrapper" afkl-lazy-image="{{ getImageUrl(item) }}"></div>
+                            <div ng-if="!fileTypes.isImage(item.mime) && item.type !== 'folder'" class="big-icon"><i class="icon icon-{{fileTypes.getMimeIcon(item.mime)}}"></i></div>
+                            <div ng-if="item.type == 'folder'" class="folder-icon"><i class="icon icon-folder"></i></div>
+                            <div class="user-item-caption">
+                                <div class="name">{{ item.name }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section ng-if="selectedView === 'list' && items.length" class="user-items list-view">
+                    <div class="material-table" ng-controller="PhotosListController">
+                        <div class="table">
+                            <div class="table-body">
+                                <div class="table-row user-item" ng-repeat="item in items track by item.share_id" ed-context-menu-item ng-click="selectItem(item, $event)" ng-dblclick="preview()" long-press="contextMenu.open()" ng-class="{ selected: itemIsSelected(item) }" ed-file-draggable ed-folder-droppable data-id="{{ item.id }}" data-type="{{item.type}}">
+                                    <div class="table-col small-col align-left">
+                                        <md-checkbox aria-label="file-selected" ng-checked="itemIsSelected(item)"></md-checkbox>
+                                    </div>
+                                    <div class="table-col show-phone name">
+                                        <div>
+                                            <i ng-if="item.type == 'file'" class="icon icon-{{fileTypes.getMimeIcon(item.mime)}}"></i>
+                                            <i ng-if="item.type == 'folder'" class="icon icon-folder"></i>
+                                            <span>{{ item.name }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="table-col">{{ item.file_size ? utils.formatFileSize(item.file_size) : '-' }}</div>
+                                    <div class="table-col">{{ utils.formatDate(item.updated_at) }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section-empty" ng-if="utils.stateIs('dashboard.favorites') && !items.length && dashboardState.loaded">
+                    <div class="icon">
+                        <i class="icon icon-star-filled"></i>
+                    </div>
+                    <div class="text">
+                        <h4>{{:: 'favoritesEmpty1' | translate }}</h4>
+                        <p>{{:: 'favoritesEmpty2' | translate }}</p>
+                    </div>
+                </section>
+
+                <section class="section-empty" ng-if="utils.stateIs('dashboard.trash') && !items.length && dashboardState.loaded">
+                    <div class="icon">
+                        <i class="icon icon-trash"></i>
+                    </div>
+                    <div class="text">
+                        <h4>{{:: 'trashEmpty1' | translate }}</h4>
+                        <p>{{:: 'trashEmpty2' | translate }}</p>
+                    </div>
+                </section>
+
+                <section class="section-empty" ng-if="utils.stateIs('dashboard.recent') && !items.length && dashboardState.recentLoaded">
+                    <div class="icon">
+                        <i class="icon icon-clock-1"></i>
+                    </div>
+                    <div class="text">
+                        <h4>{{:: 'recentEmpty1' | translate }}</h4>
+                        <p>{{:: 'recentEmpty2' | translate }}</p>
+                    </div>
+                </section>
+
+                <section class="section-empty" ng-if="utils.stateIs('dashboard.search') && !items.length && dashboardState.loaded">
+                    <div class="icon">
+                        <i class="icon icon-search"></i>
+                    </div>
+                    <div class="text">
+                        <h4>{{:: 'searchEmpty1' | translate }}</h4>
+                        <p>{{:: 'searchEmpty2' | translate }}</p>
+                    </div>
+                </section>
+
+               <div ng-if="utils.stateIs(['dashboard.folders', 'dashboard.foldersRoot']) && !items.length && dashboardState.loaded">
+                   <section class="dropzone-outter"></section>
+
+                   <div class="dropzone-inner">
+                       <i class="icon icon-upload-cloud"></i>
+                       <h3 ng-if=":: utils.folderUploadSupported">{{:: 'dropFilesFoldersHere' | translate }}</h3>
+                       <h3 ng-if=":: !utils.folderUploadSupported">{{:: 'dropFilesHere' | translate }}</h3>
+                       <div class="text-below">{{:: 'orUseBtnsAbove' | translate }}</div>
+                   </div>
+                   
+                   <div class="phone-no-photos" ng-if=":: isSmallScreen">
+                       <h1><i class="icon icon-picture"></i> {{:: 'smallScreenFolderEmpty' | translate }}</h1>
+                       <p>{{:: 'smallScreenFolderEmpty2' | translate }}</p>
+                   </div>
+               </div>
+            </div>
+        </div>
+        <div id="files-spinner" ng-if="ajaxProgress.files"><md-progress-circular md-mode="indeterminate"></md-progress-circular></div>
+    </div>
+</section>
+          
+
+<ul id="context-menu" ed-context-menu></ul>
+
+<div ng-include="'assets/views/modals.html'"></div>
+
+<script type="application/ng-template" id="confirm-photo-delete-modal">
+    <md-dialog class="md-modal md-modal-wide confirm-photo-delete-modal">
+        <div class="md-modal-header">
+            <h1>{{:: 'deleteForever' | translate }}</h1>
+            <div ng-click="utils.closeModal()" class="md-close-modal"><i class="icon icon-cancel"></i></div>
+        </div>
+
+        <p>{{:: 'confirmPermaDelete' | translate }}</p>
+        <strong>{{:: 'permaDeleteWarning' | translate }}</strong>
+
+        <div class="buttons">
+            <md-button ng-click="utils.closeModal()">{{:: 'cancel' | translate }}</md-button>
+            <md-button ng-click="delete()" class="md-raised md-primary">{{:: 'delete' | translate }}</md-button>
+        </div>
+    </md-dialog>
+</script>

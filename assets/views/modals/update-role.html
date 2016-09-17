@@ -1,0 +1,31 @@
+<md-dialog class="md-modal md-modal-wide role-modal">
+	<div class="md-modal-header">
+		<h1>Update Role</h1>
+		<div ng-click="roles.closeModal()" class="md-close-modal"><i class="mdi mdi-close"></i></div>
+	</div>
+	<form ng-submit="ctrl.parent.updateRole()">
+
+		<div class="errors">
+			<div class="error" ng-repeat="error in errors">{{ error }}</div>
+		</div>
+
+		<md-input-container>
+		<label for="email">Name</label>
+		<input id="name" type="name" ng-model="ctrl.parent.roleModel.name">
+	</md-input-container>
+
+		<md-checkbox ng-model="ctrl.parent.roleModel.permissions['admin']" aria-label="Folder Permission">Admin Dashboard</md-checkbox>
+		<md-checkbox ng-model="ctrl.parent.roleModel.permissions['users']" aria-label="Folder Permission">View Users</md-checkbox>
+		<md-checkbox ng-model="ctrl.parent.roleModel.permissions['roles']" aria-label="Folder Permission">Role Permission</md-checkbox>
+		<md-checkbox ng-model="ctrl.parent.roleModel.permissions['files']" aria-label="Folder Permission">Files Permission</md-checkbox>
+		<md-checkbox ng-model="ctrl.parent.roleModel.permissions['folders']" aria-label="Folder Permission">Folder Permission</md-checkbox>
+		<md-checkbox ng-model="ctrl.parent.roleModel.permissions['settings']" aria-label="Folder Permission">Settings Permission</md-checkbox>
+		<md-checkbox ng-model="ctrl.parent.roleModel.permissions['upload']" aria-label="Upload Permission">Upload Permission</md-checkbox>
+
+
+	<div class="buttons">
+		<md-button type="button" ng-click="ctrl.parent.roles.closeModal()">{{:: 'cancel' | translate }}</md-button>
+		<md-button type="submit" class="md-primary md-raised">{{:: 'update' | translate }}</md-button>
+	</div>
+	</form>
+</md-dialog>

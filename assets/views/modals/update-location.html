@@ -1,0 +1,22 @@
+<md-dialog class="md-modal md-modal-wide locations-modal">
+	<div class="md-modal-header">
+		<h1>Update Location</h1>
+		<div ng-click="locations.closeModal()" class="md-close-modal"><i class="mdi mdi-close"></i></div>
+	</div>
+	<form ng-submit="ctrl.parent.updateLocations()">
+
+		<div class="errors">
+			<div class="error" ng-repeat="error in errors">{{ error }}</div>
+		</div>
+
+		<md-input-container>
+		<label for="email">Name</label>
+		<input id="name" type="name" ng-model="ctrl.parent.locationModel.name">
+	</md-input-container>
+
+	<div class="buttons">
+		<md-button type="button" ng-click="ctrl.parent.locations.closeModal()">{{:: 'cancel' | translate }}</md-button>
+		<md-button type="submit" class="md-primary md-raised">{{:: 'update' | translate }}</md-button>
+	</div>
+	</form>
+</md-dialog>

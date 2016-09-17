@@ -1,0 +1,15 @@
+<script type="text/ng-template" id="assets/views/modals/permission.html">
+    <md-dialog class="md-modal move-photo-modal">
+        <div class="md-modal-header">
+            <h1>Permission</h1>
+            <div ng-click="files.closeModal()" class="md-close-modal"><i class="mdi mdi-close"></i></div>
+        </div>
+    <md-select ng-model="ctrl.parent.userModel.users" placeholder="Users">
+        <md-option ng-value="user.id" ng-repeat="user in ctrl.parent.users">{{ user.first_name }}</md-option>
+      </md-select>
+        <div class="buttons">
+            <md-button ng-click="files.closeModal()">{{:: 'cancel' | translate }}</md-button>
+            <md-button ng-click="move(selectedFolder)" class="md-raised md-primary">Allow Permission</md-button>
+        </div>
+    </md-dialog>
+</script>

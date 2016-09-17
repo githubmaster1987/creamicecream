@@ -1,0 +1,67 @@
+<md-dialog class="md-modal md-modal-wide user-modal">
+	<div class="md-modal-header">
+		<h1>{{:: 'createNewUser' | translate }} </h1>
+		<div ng-click="ctrl.parent.users.closeModal()" class="md-close-modal"><i class="mdi mdi-close"></i></div>
+	</div>
+	<form ng-submit="ctrl.parent.createNewUser()">
+
+		<div class="errors">
+			<div class="error" ng-repeat="error in ctrl.parent.errors">{{ error }}</div>
+		</div>
+
+		<md-input-container>
+		<label for="email">{{:: 'email' | translate }}</label>
+		<input id="email" type="email" ng-model="ctrl.parent.userModel.email">
+	</md-input-container>
+
+	<div layout layout-sm="column">
+		<md-input-container flex>
+		<label for="password">{{:: 'password' | translate }}</label>
+		<input id="password" type="password" ng-model="ctrl.parent.userModel.password">
+	</md-input-container>
+
+	<md-input-container flex>
+	<label for="repeatPassword">{{:: 'repeatPassword' | translate }}</label>
+	<input id="repeatPassword" type="password" ng-model="ctrl.parent.userModel.password_confirmation">
+	</md-input-container>
+	</div>
+
+	<md-input-container>
+	<label for="username">{{:: 'username' | translate }}</label>
+	<input id="username" type="text" ng-model="ctrl.parent.userModel.username">
+	</md-input-container>
+
+	<div layout layout-sm="column">
+		<md-input-container flex>
+		<label for="first_name">{{:: 'firstName' | translate }}</label>
+		<input id="first_name" type="text" ng-model="ctrl.parent.userModel.first_name">
+	</md-input-container>
+
+	<md-input-container flex>
+	<label for="last_name">{{:: 'lastName' | translate }}</label>
+	<input id="last_name" type="text" ng-model="ctrl.parent.userModel.last_name">
+	</md-input-container>
+	</div>
+
+	<div ng-if="ctrl.parent.users.current.roles.id == 2">
+	  <md-select ng-model="ctrl.parent.userModel.role" placeholder="Role">
+	    <md-option ng-value="3" >Store Manager</md-option>
+	  </md-select>
+	</div>
+	<div ng-if="ctrl.parent.users.current.roles.id != 2">
+	    <md-select ng-model="ctrl.parent.userModel.role" placeholder="Role">
+		    <md-option ng-value="role.id" ng-repeat="role in ctrl.parent.roles">{{ role.name }}</md-option>
+		</md-select>
+	</div>
+
+	  <label ng-repeat="location in ctrl.parent.locations">
+    <input type="checkbox" name="{{location.name}}" id="{{location.id}}" ng-model="location.checked" ng-change="ctrl.parent.selectedLocations()">
+    <label for="{{location.name}}">{{location.name}}</label>
+</label>
+
+	<div class="buttons">
+		<md-button type="button" ng-click="ctrl.parent.users.closeModal()">{{:: 'cancel' | translate }}</md-button>
+		<md-button type="submit" class="md-primary md-raised">{{:: 'create' | translate }}</md-button>
+	</div>
+	</form>
+</md-dialog>

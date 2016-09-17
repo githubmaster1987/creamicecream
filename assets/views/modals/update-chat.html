@@ -1,0 +1,27 @@
+<md-dialog class="md-modal md-modal-wide chat-modal">
+	<div class="md-modal-header">
+		<h1>{{ctrl.parent.chatModel.subject}}</h1>
+		<div ng-click="chat.closeModal()" class="md-close-modal"><i class="mdi mdi-close"></i></div>
+	</div>
+	<form ng-submit="ctrl.parent.updateChat()">
+
+		<div class="errors">
+			<div class="error" ng-repeat="error in errors">{{ error }}</div>
+		</div>
+
+		<div ng-repeat="message in ctrl.parent.chatModel.messages">
+			{{message.username}} :  {{message.message}}
+		</div>
+		   
+
+		<md-input-container>
+			<label for="message">Message</label>
+			<input id="message" type="text" ng-model="ctrl.parent.chatModel.message">
+		</md-input-container>
+
+	<div class="buttons">
+		<md-button type="button" ng-click="ctrl.parent.chat.closeModal()">{{:: 'cancel' | translate }}</md-button>
+		<md-button type="submit" class="md-primary md-raised">Reply</md-button>
+	</div>
+	</form>
+</md-dialog>
